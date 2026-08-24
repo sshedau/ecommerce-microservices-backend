@@ -85,8 +85,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
     depends_on:
       - user-postgres
       - redis
@@ -107,8 +106,7 @@ services:
       DB_URL: jdbc:postgresql://product-postgres:5432/product_db
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
     depends_on:
       - product-postgres
       - redis
@@ -130,8 +128,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
       USER_SERVICE_URL: http://user-service:8081
       PRODUCT_SERVICE_URL: http://product-service:8082
     depends_on:
