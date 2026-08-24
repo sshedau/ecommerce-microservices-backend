@@ -1,0 +1,154 @@
+services:
+
+  # =========================
+  # USER DATABASE
+  # =========================
+
+  user-postgres:
+    image: postgres:16
+    container_name: user-postgres
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: sujal
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5433:5432"
+    networks:
+      - ecommerce-network
+    volumes:
+      - user-postgres-data:/var/lib/postgresql/data
+
+
+  # =========================
+  # PRODUCT DATABASE
+  # =========================
+
+  product-postgres:
+    image: postgres:16
+    container_name: product-postgres
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER: sujal
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5434:5432"
+    networks:
+      - ecommerce-network
+    volumes:
+      - product-postgres-data:/var/lib/postgresql/data
+
+
+  # =========================
+  # ORDER DATABASE
+  # =========================
+
+  order-postgres:
+    image: postgres:16
+    container_name: order-postgres
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: sujal
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5435:5432"
+    networks:
+      - ecommerce-network
+    volumes:
+      - order-postgres-data:/var/lib/postgresql/data
+
+
+  # =========================
+  # REDIS
+  # =========================
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    networks:
+      - ecommerce-network
+
+
+  # =========================
+  # USER SERVICE
+  # =========================
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - user-postgres
+      - redis
+    networks:
+      - ecommerce-network
+
+
+  # =========================
+  # PRODUCT SERVICE
+  # =========================
+
+  product-service:
+    build: ./product-service
+    container_name: product-service
+    ports:
+      - "8082:8082"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - product-postgres
+      - redis
+    networks:
+      - ecommerce-network
+
+
+  # =========================
+  # ORDER SERVICE
+  # =========================
+
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    ports:
+      - "8083:8083"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - order-postgres
+      - redis
+      - user-service
+      - product-service
+    networks:
+      - ecommerce-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - ecommerce-network
+
+
+# =========================
+# NETWORK
+# =========================
+
+networks:
+  ecommerce-network:
+    driver: bridge
+
+volumes:
+  user-postgres-data:
+  product-postgres-data:
+  order-postgres-data:
