@@ -81,9 +81,12 @@ services:
     ports:
       - "8081:8081"
     environment:
+      DB_URL: jdbc:postgresql://user-postgres:5432/user_db
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - user-postgres
       - redis
@@ -101,8 +104,11 @@ services:
     ports:
       - "8082:8082"
     environment:
+      DB_URL: jdbc:postgresql://product-postgres:5432/product_db
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - product-postgres
       - redis
@@ -120,9 +126,14 @@ services:
     ports:
       - "8083:8083"
     environment:
+      DB_URL: jdbc:postgresql://order-postgres:5432/order_db
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      USER_SERVICE_URL: http://user-service:8081
+      PRODUCT_SERVICE_URL: http://product-service:8082
     depends_on:
       - order-postgres
       - redis
