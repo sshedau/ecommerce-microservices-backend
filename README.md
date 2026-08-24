@@ -549,6 +549,28 @@ This architecture provides clearer service boundaries, independent persistence, 
 
 ---
 
+## 🌐 Deployment
+
+The backend is deployed on Render using a microservices architecture.
+
+### API Gateway
+[https://api-gateway-nvvj.onrender.com](https://api-gateway-nvvj.onrender.com)
+
+### Microservices
+
+| Service | Deployment |
+|---|---|
+| User Service | [Render URL](https://user-service-evgy.onrender.com) |
+| Product Service | [Render URL](https://product-service-a26j.onrender.com) |
+| Order Service | [Render URL](https://order-service-d13w.onrender.com) |
+
+### Infrastructure
+
+- **PostgreSQL:** Neon
+- **Redis:** Upstash
+- **Deployment:** Render
+- **Containerization:** Docker
+
 ## 👨‍💻 Author
 
 **Sujal Sunil Hedau**
