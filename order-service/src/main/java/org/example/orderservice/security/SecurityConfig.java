@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers("/api/v1/orders/hello").permitAll()
+                        .requestMatchers("/api/v1/orders/instance").permitAll()
 
                         .requestMatchers(
                                 HttpMethod.POST,

@@ -1,6 +1,18 @@
 services:
 
   # =========================
+  # EUREKA SERVER
+  # =========================
+
+  eureka-server:
+    build: ./service-registry
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - ecommerce-network
+
+  # =========================
   # USER DATABASE
   # =========================
 
@@ -77,18 +89,22 @@ services:
 
   user-service:
     build: ./user-service
-    container_name: user-service
+#    container_name: user-service
+#    ports:
+#      - "8081:8081"
     ports:
-      - "8081:8081"
+      - "8081"
     environment:
       DB_URL: jdbc:postgresql://user-postgres:5432/user_db
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       REDIS_URL: redis://redis:6379
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
     depends_on:
       - user-postgres
       - redis
+      - eureka-server
     networks:
       - ecommerce-network
 
@@ -99,17 +115,21 @@ services:
 
   product-service:
     build: ./product-service
-    container_name: product-service
+#    container_name: product-service
+#    ports:
+#      - "8082:8082"
     ports:
-      - "8082:8082"
+      - "8082"
     environment:
       DB_URL: jdbc:postgresql://product-postgres:5432/product_db
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       REDIS_URL: redis://redis:6379
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
     depends_on:
       - product-postgres
       - redis
+      - eureka-server
     networks:
       - ecommerce-network
 
@@ -120,22 +140,26 @@ services:
 
   order-service:
     build: ./order-service
-    container_name: order-service
+#    container_name: order-service
+#    ports:
+#      - "8083:8083"
     ports:
-      - "8083:8083"
+      - "8083"
     environment:
       DB_URL: jdbc:postgresql://order-postgres:5432/order_db
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       REDIS_URL: redis://redis:6379
-      USER_SERVICE_URL: http://user-service:8081
-      PRODUCT_SERVICE_URL: http://product-service:8082
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+#      USER_SERVICE_URL: http://user-service:8081
+#      PRODUCT_SERVICE_URL: http://product-service:8082
     depends_on:
       - order-postgres
       - redis
       - user-service
       - product-service
+      - eureka-server
     networks:
       - ecommerce-network
 
@@ -145,14 +169,16 @@ services:
     ports:
       - "8080:8080"
     environment:
-      USER_SERVICE_URL: http://user-service:8081
-      PRODUCT_SERVICE_URL: http://product-service:8082
-      ORDER_SERVICE_URL: http://order-service:8083
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+#      USER_SERVICE_URL: http://user-service:8081
+#      PRODUCT_SERVICE_URL: http://product-service:8082
+#      ORDER_SERVICE_URL: http://order-service:8083
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       - user-service
       - product-service
       - order-service
+      - eureka-server
     networks:
       - ecommerce-network
 
